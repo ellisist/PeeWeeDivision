@@ -1,9 +1,9 @@
 # PeeWeeDivision
 A simulator of a PeeWee division being in a professional football league
 
-(I am not the NFL, I do not work for the NFL, I am not associated with the NFL. The NFL owns the names of the teams/divisions/ etc. mentioned in this program, but as I'm not making any money off of this program and can make absolutely zero impact on their audience with this program, I believe this falls under fair use.)
+(This program is in no way associated with the NFL. The NFL owns the names of the teams/divisions/ etc. mentioned in this program, but as I'm not making any money off of this program and can make absolutely zero impact on their audience with this program, I believe this falls under fair use.)
 
-Basically, what this program simulates is if a division in the NFL was replaced with a division of kids playing football, what the season and postseason would look like.
+Basically, what this program simulates is if one division in the NFL was in absolute terms worse than every other division in the NFL, what the season and postseason would look like.
 This is an interesting question because it can show some ridiculous facts about the setup of the playoff selection, and perhaps the NFL draft as well (if this program gets that far). 
 Essentially, though, our NFC-PeeWee will be competitive within its ranks (NFCPW vs NFCPW can approximately be decided by a coin flip), and the rest of the league will be assumed to be competitive, but any game between an NFCPW team and a non-NFCPW team will be completely one-sided.
 
