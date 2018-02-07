@@ -63,18 +63,24 @@ class Division(object):
 
 def game(HomeTeam, AwayTeam):
     HFA = 0  # Home Field Advantage: currently set to disregard it.
+    print(AwayTeam.name, "at", HomeTeam.name)
+    HomeWin = True
     if(HomeTeam.IsPeeWee and not AwayTeam.IsPeeWee):
-        AwayTeam.add_win()
-        HomeTeam.add_loss()
+        HomeWin = False
     elif(AwayTeam.IsPeeWee and not HomeTeam.IsPeeWee):
-        HomeTeam.add_win()
-        AwayTeam.add_loss()
+        HomeWin = True
     elif(random.randint(1, 101) + HFA >= 50):
+        HomeWin = True
+    else:
+        HomeWin = False
+    if(HomeWin):
         HomeTeam.add_win()
         AwayTeam.add_loss()
+        print(HomeTeam.name, "win,", AwayTeam.name, "lose")
     else:
         HomeTeam.add_loss()
         AwayTeam.add_win()
+        print(HomeTeam.name, "lose,", AwayTeam.name, "win")
 
 
 def season(division):  # Currently just simulates intra-division play
@@ -86,3 +92,6 @@ def season(division):  # Currently just simulates intra-division play
 AFCN = Division()
 AFCN.init_names("AFC North", "Bengals", "Steelers", "Browns", "Ravens")
 season(AFCN)
+
+for team in AFCN.list_teams():
+    team.record()
