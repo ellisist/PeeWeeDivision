@@ -16,8 +16,6 @@ See "README" file for information on this project.
 
 # NFL Structure: League made up of two conferences which are each made up of 4
 # divisions of 4 teams each.
-# Maybe make classes of Conference -> Division -> Team? Or Have
-# Conference/Division tags in team?
 
 
 class Team(object):
