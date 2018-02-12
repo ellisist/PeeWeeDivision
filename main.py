@@ -3,7 +3,7 @@ import random
 """
 Created on Sun Jan 14 16:25:48 2018
 
-@author: matte
+@author: Matthew Ellis
 """
 
 """
@@ -17,6 +17,8 @@ See "README" file for information on this project.
 # NFL Structure: League made up of two conferences which are each made up of 4
 # divisions of 4 teams each.
 
+NUM_DIV_IN_CONF = 4
+NUM_TEAMS_IN_DIV = 4
 
 class Team(object):
     def __init__(self):
@@ -27,6 +29,8 @@ class Team(object):
         self.RelativeStrength = 100  # Currently not used
         self.home_games = 0
         self.away_games = 0
+        self.schedule_opponents = []  # list of names of opponents, generated over the season
+        self.schedule_record = []  # list of 'W's and 'L's
 
     def games(self):
         return print(self.name, "Home:", str(self.home_games), "Away:", str(self.away_games))
@@ -37,9 +41,11 @@ class Team(object):
 
     def add_win(self):
         self.wins += 1
+        self.schedule_record.append('W')
 
     def add_loss(self):
         self.losses += 1
+        self.schedule_record.append('L')
 
     def record(self):
         print(self.name, "Wins:", self.wins, "Losses:", self.losses)
@@ -71,6 +77,9 @@ class Division(object):
 
     def list_teams(self):
         return [self.Team1, self.Team2, self.Team3, self.Team4]
+
+    def list_team_names(self):
+        return[self.Team1.name, self.Team2.name, self.Team3.name, self.Team4.name]
 
     def clear_games(self):
         self.Team1.clear_games()
@@ -117,6 +126,8 @@ def game(HomeTeam, AwayTeam):
 #    print(AwayTeam.name, "at", HomeTeam.name)
     HomeTeam.home_games += 1
     AwayTeam.away_games += 1
+    HomeTeam.schedule_opponents.append(AwayTeam.name)
+    AwayTeam.schedule_opponents.append(HomeTeam.name)
     HomeWin = True
     if(HomeTeam.IsPeeWee and not AwayTeam.IsPeeWee):
         HomeWin = False
@@ -135,6 +146,8 @@ def game(HomeTeam, AwayTeam):
         AwayTeam.add_win()
         print(HomeTeam.name, "lose,", AwayTeam.name, "win")
 
+def rotate_list(l, n):
+    return l[n:] + l[:n]
 
 def intra_div_play(division):  # Simulates intra-division play
     for hometeam in division.list_teams():
@@ -142,45 +155,28 @@ def intra_div_play(division):  # Simulates intra-division play
             if(hometeam != awayteam):
                 game(hometeam, awayteam)
 
-def two_div_play(div_a, div_b):  # matches two divisions against each other. only used for intra-divisional play
-    for teama in div_a.list_teams():
-        for teamb in div_b.list_teams():
-            if(teama.home_games >= 2 or teamb.away_games >= 2):
-                game(teamb, teama)
-            elif(teamb.home_games >= 2 or teama.away_games >= 2):
-                game(teama, teamb)
-            else:
-                if(bool(random.getrandbits(1))):  # rand 0 or 1, meaning False or True, respectively
-                    game(teama, teamb)
-                else:
-                    game(teamb, teama)
-    for teama in div_a.list_teams():
-        if(teama.home_games > 2 or teama.away_games > 2):
-            div_a.clear_games()
-            div_b.clear_games()
-            two_div_play(div_a, div_b)
-            break
+def two_div_play(div1, div2):
+    div_a = div1.list_teams()
+    div_b = div2.list_teams()
+    random.shuffle(div_a)
+    random.shuffle(div_b)  # randomizing the lists = randomizing the games
+    for i in range(NUM_TEAMS_IN_DIV):
+        if(i < NUM_TEAMS_IN_DIV / 2):
+            for j in range(NUM_TEAMS_IN_DIV):  # A home games
+                game(div_a[j], div_b[j])
+        else:
+            for j in range(NUM_TEAMS_IN_DIV):  # B home games
+                game(div_b[j], div_a[j])
  
 def inter_div_play(conference):  # Simulates intra-conference, inter-div play
-    n = random.randint(1,100)  # rand number 1-99. determines inter-div matches
-    div_a = conference.Division1
-    if(n < 33):
-        div_b = conference.Division2
-        div_c = conference.Division3
-        div_d = conference.Division4
-    elif(n < 66): 
-        div_b = conference.Division3
-        div_c = conference.Division2
-        div_d = conference.Division4
-    else:
-         div_b = conference.Division4
-         div_c = conference.Division2
-         div_d = conference.Division3
-    print(div_a.name, "vs", div_b.name)
-    print(div_c.name, "vs", div_d.name)
-    two_div_play(div_a, div_b)
-    two_div_play(div_c, div_d)
-       
+    div_list = random.sample(conference.list_divisions(), NUM_DIV_IN_CONF)  # shuffles divisions = random matchups of divisions
+    for i in range(0, NUM_DIV_IN_CONF, 2):  # putting divisions into A+B pairs
+        a = div_list[i]
+        b = div_list[i+1]
+        print(a.name, "vs", b.name)
+        two_div_play(a,b)
+
+    
 def intra_conf_play(conference):
     inter_div_play(conference)
     for div in conference.list_divisions():
