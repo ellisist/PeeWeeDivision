@@ -31,6 +31,7 @@ class Team(object):
         self.away_games = 0
         self.schedule_opponents = []  # list of names of opponents, generated over the season
         self.schedule_record = []  # list of 'W's and 'L's
+        self.schedule_games = []  # list of H(ome)/A(way)
 
     def games(self):
         return print(self.name, "Home:", str(self.home_games), "Away:", str(self.away_games))
@@ -125,7 +126,9 @@ def game(HomeTeam, AwayTeam):
     HFA = 0  # Home Field Advantage: currently set to disregard it.
 #    print(AwayTeam.name, "at", HomeTeam.name)
     HomeTeam.home_games += 1
+    HomeTeam.schedule_games.append('H')
     AwayTeam.away_games += 1
+    AwayTeam.schedule_games.append('A')
     HomeTeam.schedule_opponents.append(AwayTeam.name)
     AwayTeam.schedule_opponents.append(HomeTeam.name)
     HomeWin = True
@@ -167,6 +170,7 @@ def two_div_play(div1, div2):
         else:
             for j in range(NUM_TEAMS_IN_DIV):  # B home games
                 game(div_b[j], div_a[j])
+        div_b = rotate_list(div_b, 1)
  
 def inter_div_play(conference):  # Simulates intra-conference, inter-div play
     div_list = random.sample(conference.list_divisions(), NUM_DIV_IN_CONF)  # shuffles divisions = random matchups of divisions
