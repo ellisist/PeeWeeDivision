@@ -20,7 +20,7 @@ See "README" file for information on this project.
 NUM_DIV_IN_CONF = 4
 NUM_TEAMS_IN_DIV = 4
 
-from objects import *
+from objects.py import *
 
 
 def game(HomeTeam, AwayTeam):
