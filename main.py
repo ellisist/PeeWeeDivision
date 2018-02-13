@@ -26,13 +26,14 @@ class Team(object):
         self.losses = 0
         self.IsPeeWee = False
         self.name = ""
+        self.divname = ""
         self.RelativeStrength = 100  # Currently not used
         self.home_games = 0
         self.away_games = 0
         self.schedule_opponents = []  # list of names of opponents, generated over the season
         self.schedule_record = []  # list of 'W's and 'L's
         self.schedule_games = []  # list of H(ome)/A(way)
-
+        self.schedule_divs = []  # list of divs of opponents
     def games(self):
         return print(self.name, "Home:", str(self.home_games), "Away:", str(self.away_games))
 
@@ -64,6 +65,7 @@ class Division(object):
         self.Team2 = Team()
         self.Team3 = Team()
         self.Team4 = Team()
+        self.schedule_opponents = []  # list of paired divs. Should only have len() = 2 for a season
 
     def init_names(self, divname, name1, name2, name3, name4):
         self.name = divname
@@ -71,6 +73,11 @@ class Division(object):
         self.Team2.name = name2
         self.Team3.name = name3
         self.Team4.name = name4
+        self.Team1.divname = divname
+        self.Team2.divname = divname
+        self.Team3.divname = divname
+        self.Team4.divname = divname
+
 
     def make_peewee(self):
         self.Team1.IsPeeWee = self.Team2.IsPeeWee = True
@@ -81,6 +88,9 @@ class Division(object):
 
     def list_team_names(self):
         return[self.Team1.name, self.Team2.name, self.Team3.name, self.Team4.name]
+    
+    def rank_teams(self):  # to add later: ability to rank teams based on record from season
+        pass
 
     def clear_games(self):
         self.Team1.clear_games()
@@ -131,6 +141,8 @@ def game(HomeTeam, AwayTeam):
     AwayTeam.schedule_games.append('A')
     HomeTeam.schedule_opponents.append(AwayTeam.name)
     AwayTeam.schedule_opponents.append(HomeTeam.name)
+    HomeTeam.schedule_divs.append(AwayTeam.divname)
+    AwayTeam.schedule_divs.append(HomeTeam.divname)
     HomeWin = True
     if(HomeTeam.IsPeeWee and not AwayTeam.IsPeeWee):
         HomeWin = False
@@ -165,13 +177,19 @@ def two_div_play(div1, div2):
     random.shuffle(div_b)  # randomizing the lists = randomizing the games
     for i in range(NUM_TEAMS_IN_DIV):
         if(i < NUM_TEAMS_IN_DIV / 2):
-            for j in range(NUM_TEAMS_IN_DIV):  # A home games
-                game(div_a[j], div_b[j])
-        else:
-            for j in range(NUM_TEAMS_IN_DIV):  # B home games
+            for j in range(NUM_TEAMS_IN_DIV):  # A home games }
+                game(div_a[j], div_b[j])                    # }}} since these are randomized lists, the home/away teams are randomized
+        else:                                               # }}
+            for j in range(NUM_TEAMS_IN_DIV):  # B home games }
                 game(div_b[j], div_a[j])
         div_b = rotate_list(div_b, 1)
  
+def one_game_each(div1, div2):
+    div_a = random.sample(div1.list_teams(), NUM_TEAMS_IN_DIV)
+    div_b = random.sample(div2.list_teams(), NUM_TEAMS_IN_DIV)
+    for i in range(NUM_TEAMS_IN_DIV):
+        game(div_a[i], div_b[i])
+
 def inter_div_play(conference):  # Simulates intra-conference, inter-div play
     div_list = random.sample(conference.list_divisions(), NUM_DIV_IN_CONF)  # shuffles divisions = random matchups of divisions
     for i in range(0, NUM_DIV_IN_CONF, 2):  # putting divisions into A+B pairs
@@ -179,12 +197,27 @@ def inter_div_play(conference):  # Simulates intra-conference, inter-div play
         b = div_list[i+1]
         print(a.name, "vs", b.name)
         two_div_play(a,b)
+    rev_div_list = div_list[::-1]  # a reversed copy of the div_list
+    one_game_each(div_list[0], div_list[2])  # HARDCODE of four. Need to figure out a way to generalize.
+    one_game_each(div_list[3], div_list[0])  # Also w/ this and one_game_each, H/A decided at division-level
+    one_game_each(div_list[1], div_list[3])
+    one_game_each(div_list[2], div_list[1])
 
     
 def intra_conf_play(conference):
     inter_div_play(conference)
     for div in conference.list_divisions():
         intra_div_play(div)
+
+def inter_conf_play(conf1, conf2):  # pairs divisions randomly, puts through two_div_play
+   conf_a = random.sample(conf1.list_divisions(), NUM_DIV_IN_CONF)
+   conf_b = random.sample(conf2.list_divisions(), NUM_DIV_IN_CONF)
+   for i in range(NUM_DIV_IN_CONF):
+       two_div_play(conf_a[i], conf_b[i])
+
+
+def playoff_bound(conf1, conf2):  # to add later: determine the playoff picture from a season
+    pass
 
 AFCN = Division()
 AFCS = Division()
