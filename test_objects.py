@@ -1,7 +1,7 @@
 import unittest
-import main
+import objects
 
-class TestMain(unittest.TestCase):
+class TestObjects(unittest.TestCase):
     pass
 
 if __name__ == "__main__":
