@@ -215,6 +215,10 @@ def inter_conf_play(conf1, conf2):  # pairs divisions randomly, puts through two
    for i in range(NUM_DIV_IN_CONF):
        two_div_play(conf_a[i], conf_b[i])
 
+def season(conf1, conf2):
+    inter_conf_play(conf1, conf2)
+    intra_conf_play(conf1)
+    intra_conf_play(conf2)
 
 def playoff_bound(conf1, conf2):  # to add later: determine the playoff picture from a season
     pass
@@ -230,11 +234,25 @@ AFCW.init_names("AFC West","Chiefs","Chargers","Raiders","Broncos")
 
 AFConf = init_conference("AFC", AFCN, AFCS, AFCE, AFCW)
 
+NFCN = Division()
+NFCS = Division()
+NFCE = Division()
+NFCW = Division()
+NFCN.init_names("NFC North", "Vikings", "Lions", "Packers", "Bears")
+NFCS.init_names("NFC South","Saints","Panthers","Falcons","Buccaneers")
+NFCE.init_names("NFC East","Eagles","Cowboys","Washington","Giants")
+NFCW.init_names("NFC West","Rams","Seahawks","Cardinals","49ers")
 
-intra_conf_play(AFConf)
+NFConf = init_conference("NFC", NFCN, NFCS, NFCE, NFCW)
+
+season(AFConf, NFConf)
 
 for div in AFConf.list_divisions():
     for team in div.list_teams():
         # team.record()
          team.games()
-        
+for div in NFConf.list_divisions():
+    for team in div.list_teams():
+        # team.record()
+         team.games()
+       
