@@ -52,7 +52,7 @@ def game(HomeTeam, AwayTeam):
         print(HomeTeam.name, "lose,", AwayTeam.name, "win")
 
 def rotate_list(l, n):
-    return l[n:] + l[:n]
+    return l[n%len(l):] + l[:n%len(l)]
 
 def intra_div_play(division):  # Simulates intra-division play
     for hometeam in division.list_teams():
@@ -61,6 +61,8 @@ def intra_div_play(division):  # Simulates intra-division play
                 game(hometeam, awayteam)
 
 def two_div_play(div1, div2):
+    div1.schedule_opponents.append(div2.name)
+    div2.schedule_opponents.append(div1.name)
     div_a = div1.list_teams()
     div_b = div2.list_teams()
     shuffle(div_a)

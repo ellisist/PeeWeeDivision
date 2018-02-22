@@ -1,0 +1,6 @@
+*.py~
+*.un
+*.un~
+*.swp
+__pycache__
+.cache
